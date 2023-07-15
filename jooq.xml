@@ -3,16 +3,16 @@
   <jdbc>
     <driver>com.mysql.cj.jdbc.Driver</driver>
     <url>jdbc:mysql://localhost:3306/cinema</url>
-    <user>phong</user>
-    <password>Root1234!</password>
+    <user>YOUR_DATABASE_USERNAME</user>
+    <password>YOUR_DATABASE_PASSWORD</password>
     <properties>
       <property>
         <key>user</key>
-        <value>phong</value>
+        <value>YOUR_DATABASE_USERNAME</value>
       </property>
       <property>
         <key>password</key>
-        <value>Root1234!</value>
+        <value>YOUR_DATABASE_PASSWORD</value>
       </property>
     </properties>
   </jdbc>
@@ -27,7 +27,7 @@
         | SECRET_SCHEMA\.SECRET_TABLE # This table (qualified name) should not be generated
         | SECRET_ROUTINE # This routine (unqualified name) ...
       </excludes>
-      <inputSchema>cinema</inputSchema>
+      <inputSchema>YOUR_DATABASE_SCHEMA</inputSchema>
     </database>
     <generate/>
 
