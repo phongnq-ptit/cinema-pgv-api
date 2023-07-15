@@ -1,0 +1,39 @@
+<configuration>
+  <!-- Configure the database connection here -->
+  <jdbc>
+    <driver>com.mysql.cj.jdbc.Driver</driver>
+    <url>jdbc:mysql://localhost:3306/cinema</url>
+    <user>phong</user>
+    <password>Root1234!</password>
+    <properties>
+      <property>
+        <key>user</key>
+        <value>phong</value>
+      </property>
+      <property>
+        <key>password</key>
+        <value>Root1234!</value>
+      </property>
+    </properties>
+  </jdbc>
+
+  <generator>
+    <database>
+      <name>org.jooq.meta.mysql.MySQLDatabase</name>
+      <includes>.*</includes>
+      <excludes>
+        UNUSED_TABLE # This table (unqualified name) should not be generated
+        | PREFIX_.* # Objects with a given prefix should not be generated
+        | SECRET_SCHEMA\.SECRET_TABLE # This table (qualified name) should not be generated
+        | SECRET_ROUTINE # This routine (unqualified name) ...
+      </excludes>
+      <inputSchema>cinema</inputSchema>
+    </database>
+    <generate/>
+
+    <target>
+      <packageName>org.cinema.jooq</packageName>
+      <directory>src/main/java</directory>
+    </target>
+  </generator>
+</configuration>
