@@ -1,19 +1,16 @@
 package org.cinema.controllers;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.cinema.models.dto.UserDto;
+import jakarta.ws.rs.core.Response;
+import org.cinema.models.request.LoginRequest;
 import org.cinema.services.data.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
   @Autowired
@@ -24,17 +21,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<UserDto> login(@RequestBody LoginPayload loginPayload) {
-    UserDto user = authService.login(loginPayload.getEmail(), loginPayload.getPassword());
-
-    return ResponseEntity.ok().body(user);
+  public Response login(@RequestBody LoginRequest loginRequest) {
+    return authService.login(loginRequest);
   }
-}
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class LoginPayload {
-  private String email;
-  private String password;
 }
