@@ -4,6 +4,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.Objects;
 import org.cinema.auth.JwtTokenUtils;
+import org.cinema.exception.CustomException;
 import org.cinema.models.dto.UserDto;
 import org.cinema.models.request.LoginRequest;
 import org.cinema.models.response.BaseResponse;
@@ -28,13 +29,13 @@ public class AuthService {
     this.userQueries = userQueries;
   }
 
-  public Response login(LoginRequest loginRequest) {
+  public Response login(LoginRequest loginRequest) throws CustomException {
     UserDto user = userQueries.findByEmailAndPassword(loginRequest.getEmail(),
         loginRequest.getPassword());
+
     if (Objects.isNull(user)) {
-      return Response.status(Status.NOT_FOUND)
-          .entity(new BaseResponse<>(404, "user do not exsited", null))
-          .build();
+      throw new CustomException(Status.NOT_FOUND, CustomException.USER_NOT_FOUND,
+          CustomException.USER_NOT_FOUND_MESSAGE);
     }
 
     String accessToken = jwt.generateToken(user, ACCESS_TOKEN_EXPIRY);

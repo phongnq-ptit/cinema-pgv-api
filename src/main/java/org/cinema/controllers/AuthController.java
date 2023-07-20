@@ -1,6 +1,7 @@
 package org.cinema.controllers;
 
 import jakarta.ws.rs.core.Response;
+import org.cinema.exception.CustomException;
 import org.cinema.models.request.LoginRequest;
 import org.cinema.services.data.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public Response login(@RequestBody LoginRequest loginRequest) {
+  public Response login(@RequestBody LoginRequest loginRequest) throws CustomException {
     return authService.login(loginRequest);
   }
 }
