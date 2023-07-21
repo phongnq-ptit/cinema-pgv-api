@@ -9,9 +9,11 @@ public class CustomException extends Exception implements Serializable {
 
   // DEFINE ERROR CODE
   public static final String USER_NOT_FOUND = "USER_NOT_FOUND";
+  public static final String USER_EXISTED = "USER_EXISTED";
 
   // DEFINE MESSAGE ERROR CODE
   public static final String USER_NOT_FOUND_MESSAGE = "Người dùng không tồn tại!";
+  public static final String USER_EXISTED_MESSAGE = "Người dùng đã tồn tại";
 
   public CustomException(String message) {
     super(message);
