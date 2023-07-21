@@ -3,6 +3,7 @@ package org.cinema.controllers;
 import jakarta.ws.rs.core.Response;
 import org.cinema.exception.CustomException;
 import org.cinema.models.request.LoginRequest;
+import org.cinema.models.request.RefreshTokenRequest;
 import org.cinema.models.request.RegisterRequest;
 import org.cinema.services.data.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,10 @@ public class AuthController {
   @PostMapping("/register")
   public Response register(@RequestBody RegisterRequest registerRequest) throws CustomException {
     return authService.register(registerRequest);
+  }
+
+  @PostMapping("/refresh_token")
+  public Response refreshToken(@RequestBody RefreshTokenRequest registerRequest) throws CustomException {
+    return authService.getNewAccessToken(registerRequest.getRefreshToken());
   }
 }

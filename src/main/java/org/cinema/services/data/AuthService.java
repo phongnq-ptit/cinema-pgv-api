@@ -5,7 +5,9 @@ import jakarta.ws.rs.core.Response.Status;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 import org.cinema.auth.JwtTokenUtils;
 import org.cinema.exception.CustomException;
 import org.cinema.models.dto.UserDto;
@@ -14,6 +16,7 @@ import org.cinema.models.request.LoginRequest;
 import org.cinema.models.request.RegisterRequest;
 import org.cinema.models.response.BaseResponse;
 import org.cinema.models.response.LoginResponse;
+import org.cinema.models.response.RefreshTokenResponse;
 import org.cinema.queries.UserQueries;
 import org.cinema.services.apis.EmailService;
 import org.cinema.utils.CommonUtiils;
@@ -76,5 +79,24 @@ public class AuthService {
     emailService.sendMail(MailTemplate.MAIL_VERIFY_ACCOUNT, mail);
 
     return Response.noContent().build();
+  }
+
+  public Response getNewAccessToken(String refreshToken) {
+    try {
+      UserDto user = jwt.verifyToken(refreshToken);
+      if (user == null || StringUtils.isEmpty(user.getUuid().toString())) {
+        return Response.serverError().entity("Wrong token!").build();
+      }
+
+      String newAccessToken = jwt.generateToken(user, ACCESS_TOKEN_EXPIRY);
+      return Response.ok().entity(
+          new BaseResponse<>(
+              200,
+              "Refresh accessToken successful",
+              new RefreshTokenResponse(newAccessToken)))
+          .build();
+    } catch (RuntimeException e) {
+      return Response.serverError().entity("Wrong token!").build();
+    }
   }
 }
