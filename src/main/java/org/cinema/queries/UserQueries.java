@@ -3,6 +3,7 @@ package org.cinema.queries;
 import static org.cinema.jooq.tables.Users.USERS;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import java.util.Objects;
 import java.util.UUID;
 import org.cinema.models.dto.UserDto;
 import org.cinema.models.records.UserRecord.UserR;
@@ -53,14 +54,14 @@ public class UserQueries {
 
   public boolean insert(RegisterRequest newUser) {
     int result = dsl.insertInto(USERS,
-        USERS.UUID,
-        USERS.EMAIL,
-        USERS.PASSWORD,
-        USERS.ADDRESS,
-        USERS.USER_NAME,
-        USERS.CINEMA_ID,
-        USERS.ROLE,
-        USERS.ACTIVE)
+            USERS.UUID,
+            USERS.EMAIL,
+            USERS.PASSWORD,
+            USERS.ADDRESS,
+            USERS.USER_NAME,
+            USERS.CINEMA_ID,
+            USERS.ROLE,
+            USERS.ACTIVE)
         .values(
             CommonUtiils.uuidToBytesArray(newUser.getUuid()),
             newUser.getEmail(),
@@ -76,12 +77,16 @@ public class UserQueries {
   }
 
   public boolean update(UUID userUuid, UserDto userUpdate) {
-    int result = dsl.update(USERS)
+    var query = dsl.update(USERS)
         .set(USERS.ADDRESS, userUpdate.getAddress())
         .set(USERS.USER_NAME, userUpdate.getUserName())
-        .set(USERS.CINEMA_ID, userUpdate.getCinemaId().toString().getBytes())
-        .set(USERS.ACTIVE, userUpdate.getActive())
-        .where(USERS.UUID.eq(CommonUtiils.uuidToBytesArray(userUuid)))
+        .set(USERS.ACTIVE, userUpdate.getActive());
+
+    if (Objects.nonNull(userUpdate.getCinemaId())) {
+      query = query.set(USERS.CINEMA_ID, CommonUtiils.uuidToBytesArray(userUpdate.getCinemaId()));
+    }
+
+    int result = query.where(USERS.UUID.eq(CommonUtiils.uuidToBytesArray(userUuid)))
         .execute();
 
     return result != 0;

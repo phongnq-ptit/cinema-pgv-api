@@ -5,7 +5,6 @@ import jakarta.ws.rs.core.Response.Status;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.cinema.auth.JwtTokenUtils;
@@ -51,6 +50,11 @@ public class AuthService {
           CustomException.USER_NOT_FOUND_MESSAGE);
     }
 
+    if (user.getActive() == 0) {
+      throw new CustomException(CustomException.ACCOUNT_IS_NOT_VERIFIED,
+          CustomException.ACCOUNT_IS_NOT_VERIFIED_MESSAGE);
+    }
+
     String accessToken = jwt.generateToken(user, ACCESS_TOKEN_EXPIRY);
     String refreshToken = jwt.generateToken(user, REFRESH_TOKEN_EXPIRY);
 
@@ -58,7 +62,7 @@ public class AuthService {
         .entity(new BaseResponse<LoginResponse>(
             200,
             "login successful",
-            new LoginResponse(accessToken, refreshToken)))
+            new LoginResponse(accessToken, refreshToken, user)))
         .build();
   }
 
@@ -98,5 +102,28 @@ public class AuthService {
     } catch (RuntimeException e) {
       return Response.serverError().entity("Wrong token!").build();
     }
+  }
+
+  public Response verifyAccount(UUID userUuid) {
+    UserDto user = userQueries.findByUuid(userUuid);
+
+    if (user.getActive() == 1) {
+      return Response.ok().entity(
+              new BaseResponse<>(
+                  200,
+                  "This account had been verify.",
+                  null))
+          .build();
+    }
+
+    user.setActive(1);
+    userQueries.update(userUuid, user);
+
+    return Response.ok().entity(
+            new BaseResponse<>(
+                204,
+                "Account verify successful",
+                null))
+        .build();
   }
 }

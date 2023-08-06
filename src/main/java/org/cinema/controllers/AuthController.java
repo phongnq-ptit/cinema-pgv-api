@@ -1,6 +1,7 @@
 package org.cinema.controllers;
 
 import jakarta.ws.rs.core.Response;
+import java.util.UUID;
 import org.cinema.exception.CustomException;
 import org.cinema.models.request.LoginRequest;
 import org.cinema.models.request.RefreshTokenRequest;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,5 +38,10 @@ public class AuthController {
   @PostMapping("/refresh_token")
   public Response refreshToken(@RequestBody RefreshTokenRequest registerRequest) throws CustomException {
     return authService.getNewAccessToken(registerRequest.getRefreshToken());
+  }
+
+  @PostMapping("/verify-account")
+  public Response verifyAccount(@RequestParam UUID userUuid) {
+    return authService.verifyAccount(userUuid);
   }
 }
