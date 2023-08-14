@@ -8,7 +8,7 @@ import java.util.UUID;
 import javax.xml.bind.DatatypeConverter;
 
 @ApplicationScoped
-public class CommonUtiils {
+public class CommonUtils {
 
   // Password encoder
   public static String hashPassword(String password) {

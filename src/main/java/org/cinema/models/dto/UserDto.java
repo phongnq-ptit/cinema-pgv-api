@@ -29,8 +29,15 @@ public class UserDto implements Principal {
 
   public static UserDto toDto(UserR user) {
     if (Objects.isNull(user)) return null;
-    return new UserDto(user.uuid(), UserRole.valueOf(user.role()), user.userName(),
-        user.email(), user.address(), user.cinemaId(), user.active(), user.createdAt(),
+    return new UserDto(
+        user.uuid(),
+        UserRole.valueOf(user.role()),
+        user.userName(),
+        user.email(),
+        user.address(),
+        user.cinemaId(),
+        user.active(),
+        user.createdAt(),
         user.updatedAt());
   }
 

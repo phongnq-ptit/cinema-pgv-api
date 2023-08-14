@@ -18,7 +18,7 @@ import org.cinema.models.response.LoginResponse;
 import org.cinema.models.response.RefreshTokenResponse;
 import org.cinema.queries.UserQueries;
 import org.cinema.services.apis.EmailService;
-import org.cinema.utils.CommonUtiils;
+import org.cinema.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +28,9 @@ public class AuthService {
   private static final long ACCESS_TOKEN_EXPIRY = 30; // 30 minutes
   private static final long REFRESH_TOKEN_EXPIRY = 43200; // 30 days
 
-  @Autowired
-  private final JwtTokenUtils jwt;
-  @Autowired
-  private final UserQueries userQueries;
-  @Autowired
-  private final EmailService emailService;
+  @Autowired private final JwtTokenUtils jwt;
+  @Autowired private final UserQueries userQueries;
+  @Autowired private final EmailService emailService;
 
   public AuthService(JwtTokenUtils jwt, UserQueries userQueries, EmailService emailService) {
     this.jwt = jwt;
@@ -42,27 +39,27 @@ public class AuthService {
   }
 
   public Response login(LoginRequest loginRequest) throws CustomException {
-    UserDto user = userQueries.findByEmailAndPassword(loginRequest.getEmail(),
-        CommonUtiils.hashPassword(loginRequest.getPassword()));
+    UserDto user =
+        userQueries.findByEmailAndPassword(
+            loginRequest.getEmail(), CommonUtils.hashPassword(loginRequest.getPassword()));
 
     if (Objects.isNull(user)) {
-      throw new CustomException(Status.NOT_FOUND, CustomException.USER_NOT_FOUND,
-          CustomException.USER_NOT_FOUND_MESSAGE);
+      throw new CustomException(
+          Status.NOT_FOUND, CustomException.USER_NOT_FOUND, CustomException.USER_NOT_FOUND_MESSAGE);
     }
 
     if (user.getActive() == 0) {
-      throw new CustomException(CustomException.ACCOUNT_IS_NOT_VERIFIED,
-          CustomException.ACCOUNT_IS_NOT_VERIFIED_MESSAGE);
+      throw new CustomException(
+          CustomException.ACCOUNT_IS_NOT_VERIFIED, CustomException.ACCOUNT_IS_NOT_VERIFIED_MESSAGE);
     }
 
     String accessToken = jwt.generateToken(user, ACCESS_TOKEN_EXPIRY);
     String refreshToken = jwt.generateToken(user, REFRESH_TOKEN_EXPIRY);
 
     return Response.ok()
-        .entity(new BaseResponse<LoginResponse>(
-            200,
-            "login successful",
-            new LoginResponse(accessToken, refreshToken, user)))
+        .entity(
+            new BaseResponse<LoginResponse>(
+                200, "login successful", new LoginResponse(accessToken, refreshToken, user)))
         .build();
   }
 
@@ -93,11 +90,10 @@ public class AuthService {
       }
 
       String newAccessToken = jwt.generateToken(user, ACCESS_TOKEN_EXPIRY);
-      return Response.ok().entity(
-          new BaseResponse<>(
-              200,
-              "Refresh accessToken successful",
-              new RefreshTokenResponse(newAccessToken)))
+      return Response.ok()
+          .entity(
+              new BaseResponse<>(
+                  200, "Refresh accessToken successful", new RefreshTokenResponse(newAccessToken)))
           .build();
     } catch (RuntimeException e) {
       return Response.serverError().entity("Wrong token!").build();
@@ -108,22 +104,14 @@ public class AuthService {
     UserDto user = userQueries.findByUuid(userUuid);
 
     if (user.getActive() == 1) {
-      return Response.ok().entity(
-              new BaseResponse<>(
-                  200,
-                  "This account had been verify.",
-                  null))
+      return Response.ok()
+          .entity(new BaseResponse<>(200, "This account had been verify.", null))
           .build();
     }
 
     user.setActive(1);
     userQueries.update(userUuid, user);
 
-    return Response.ok().entity(
-            new BaseResponse<>(
-                204,
-                "Account verify successful",
-                null))
-        .build();
+    return Response.ok().entity(new BaseResponse<>(204, "Account verify successful", null)).build();
   }
 }

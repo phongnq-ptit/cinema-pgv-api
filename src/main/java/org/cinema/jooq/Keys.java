@@ -4,9 +4,21 @@
 package org.cinema.jooq;
 
 
+import org.cinema.jooq.tables.Categories;
+import org.cinema.jooq.tables.Files;
 import org.cinema.jooq.tables.FlywaySchemaHistory;
+import org.cinema.jooq.tables.MovieCategory;
+import org.cinema.jooq.tables.MovieFile;
+import org.cinema.jooq.tables.MoviePublic;
+import org.cinema.jooq.tables.Movies;
 import org.cinema.jooq.tables.Users;
+import org.cinema.jooq.tables.records.CategoriesRecord;
+import org.cinema.jooq.tables.records.FilesRecord;
 import org.cinema.jooq.tables.records.FlywaySchemaHistoryRecord;
+import org.cinema.jooq.tables.records.MovieCategoryRecord;
+import org.cinema.jooq.tables.records.MovieFileRecord;
+import org.cinema.jooq.tables.records.MoviePublicRecord;
+import org.cinema.jooq.tables.records.MoviesRecord;
 import org.cinema.jooq.tables.records.UsersRecord;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -25,6 +37,12 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<CategoriesRecord> KEY_CATEGORIES_PRIMARY = Internal.createUniqueKey(Categories.CATEGORIES, DSL.name("KEY_categories_PRIMARY"), new TableField[] { Categories.CATEGORIES.ID }, true);
+    public static final UniqueKey<FilesRecord> KEY_FILES_PRIMARY = Internal.createUniqueKey(Files.FILES, DSL.name("KEY_files_PRIMARY"), new TableField[] { Files.FILES.ID }, true);
     public static final UniqueKey<FlywaySchemaHistoryRecord> KEY_FLYWAY_SCHEMA_HISTORY_PRIMARY = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("KEY_flyway_schema_history_PRIMARY"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
+    public static final UniqueKey<MovieCategoryRecord> KEY_MOVIE_CATEGORY_PRIMARY = Internal.createUniqueKey(MovieCategory.MOVIE_CATEGORY, DSL.name("KEY_movie_category_PRIMARY"), new TableField[] { MovieCategory.MOVIE_CATEGORY.ID }, true);
+    public static final UniqueKey<MovieFileRecord> KEY_MOVIE_FILE_PRIMARY = Internal.createUniqueKey(MovieFile.MOVIE_FILE, DSL.name("KEY_movie_file_PRIMARY"), new TableField[] { MovieFile.MOVIE_FILE.ID }, true);
+    public static final UniqueKey<MoviePublicRecord> KEY_MOVIE_PUBLIC_PRIMARY = Internal.createUniqueKey(MoviePublic.MOVIE_PUBLIC, DSL.name("KEY_movie_public_PRIMARY"), new TableField[] { MoviePublic.MOVIE_PUBLIC.ID }, true);
+    public static final UniqueKey<MoviesRecord> KEY_MOVIES_PRIMARY = Internal.createUniqueKey(Movies.MOVIES, DSL.name("KEY_movies_PRIMARY"), new TableField[] { Movies.MOVIES.ID }, true);
     public static final UniqueKey<UsersRecord> KEY_USERS_PRIMARY = Internal.createUniqueKey(Users.USERS, DSL.name("KEY_users_PRIMARY"), new TableField[] { Users.USERS.ID }, true);
 }
