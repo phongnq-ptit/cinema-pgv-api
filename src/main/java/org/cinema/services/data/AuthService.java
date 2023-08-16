@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-  private static final long ACCESS_TOKEN_EXPIRY = 30; // 30 minutes
+  private static final long ACCESS_TOKEN_EXPIRY = 43200; // 30 minutes
   private static final long REFRESH_TOKEN_EXPIRY = 43200; // 30 days
 
   @Autowired private final JwtTokenUtils jwt;

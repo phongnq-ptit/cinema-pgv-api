@@ -23,10 +23,11 @@ public class MovieQueries {
   }
 
   public void insert(MovieDto movie) {
+    movie.setUuid(UUID.randomUUID());
     dsl.insertInto(
             MOVIES, MOVIES.UUID, MOVIES.NAME, MOVIES.DURATION, MOVIES.AUTHOR, MOVIES.RELEASE_DATE)
         .values(
-            CommonUtils.uuidToBytesArray(UUID.randomUUID()),
+            CommonUtils.uuidToBytesArray(movie.getUuid()),
             movie.getName(),
             movie.getDuration(),
             movie.getAuthor(),
