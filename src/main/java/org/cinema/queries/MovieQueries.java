@@ -30,7 +30,7 @@ public class MovieQueries {
   }
 
   public List<MovieDto> findAll() {
-    List<MovieR> movieRs = dsl.selectFrom(MOVIES).fetchInto(MovieR.class);
+    List<MovieR> movieRs = dsl.selectFrom(MOVIES).orderBy(MOVIES.ID.desc()).fetchInto(MovieR.class);
 
     List<MovieDto> movies = new ArrayList<>();
     for (MovieR movieR : movieRs) {
