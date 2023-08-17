@@ -4,6 +4,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import org.cinema.models.dto.FileDto;
 import org.cinema.models.dto.MovieDto;
+import org.cinema.models.response.BaseResponse;
 import org.cinema.queries.FileQueries;
 import org.cinema.queries.MovieQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,13 @@ public class MovieService {
     movieQueries.insert(newMovie);
 
     return Response.noContent().build();
+  }
+
+  public Response getListMovies() {
+    return Response.ok()
+        .entity(
+            new BaseResponse<List<MovieDto>>(
+                200, "lay ra danh sach phim thanh cong", movieQueries.findAll()))
+        .build();
   }
 }

@@ -14,5 +14,4 @@ public class MovieRecord {
       int active,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {}
-  ;
 }
