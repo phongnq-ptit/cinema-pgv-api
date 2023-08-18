@@ -59,12 +59,12 @@ public class Files extends TableImpl<FilesRecord> {
     /**
      * The column <code>cinema.files.file_name</code>.
      */
-    public final TableField<FilesRecord, String> FILE_NAME = createField(DSL.name("file_name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<FilesRecord, String> FILE_NAME = createField(DSL.name("file_name"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
      * The column <code>cinema.files.url</code>.
      */
-    public final TableField<FilesRecord, String> URL = createField(DSL.name("url"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<FilesRecord, String> URL = createField(DSL.name("url"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>cinema.files.size</code>.
@@ -74,7 +74,7 @@ public class Files extends TableImpl<FilesRecord> {
     /**
      * The column <code>cinema.files.type</code>.
      */
-    public final TableField<FilesRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<FilesRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
      * The column <code>cinema.files.created_at</code>.

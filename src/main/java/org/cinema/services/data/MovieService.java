@@ -2,8 +2,10 @@ package org.cinema.services.data;
 
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import java.util.UUID;
 import org.cinema.models.dto.FileDto;
 import org.cinema.models.dto.MovieDto;
+import org.cinema.models.dto.MoviePublicDto;
 import org.cinema.models.response.BaseResponse;
 import org.cinema.queries.FileQueries;
 import org.cinema.queries.MovieQueries;
@@ -37,6 +39,22 @@ public class MovieService {
         .entity(
             new BaseResponse<List<MovieDto>>(
                 200, "lay ra danh sach phim thanh cong", movieQueries.findAll()))
+        .build();
+  }
+
+  public Response addMoviePublic(MoviePublicDto moviePublicDto) {
+    movieQueries.insertMoviePublic(moviePublicDto);
+
+    return Response.noContent().build();
+  }
+
+  public Response getListMoviePublic(UUID braUuid) {
+    return Response.ok()
+        .entity(
+            new BaseResponse<List<MoviePublicDto>>(
+                200,
+                "lay ra danh sach phim xuat ban thanh cong",
+                movieQueries.getListMoviePublic(braUuid)))
         .build();
   }
 }

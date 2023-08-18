@@ -14,4 +14,14 @@ public class MovieRecord {
       int active,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {}
+
+  public record MoviePublicR(
+      Long id,
+      UUID uuid,
+      UUID movieUuid,
+      UUID branchUuid,
+      LocalDateTime startDate,
+      LocalDateTime endDate,
+      int price,
+      int totalTickets) {}
 }

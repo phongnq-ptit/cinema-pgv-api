@@ -59,7 +59,7 @@ public class Categories extends TableImpl<CategoriesRecord> {
     /**
      * The column <code>cinema.categories.name</code>.
      */
-    public final TableField<CategoriesRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<CategoriesRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
      * The column <code>cinema.categories.description</code>.

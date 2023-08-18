@@ -59,7 +59,7 @@ public class Movies extends TableImpl<MoviesRecord> {
     /**
      * The column <code>cinema.movies.name</code>.
      */
-    public final TableField<MoviesRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MoviesRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
      * The column <code>cinema.movies.duration</code>.
@@ -69,7 +69,7 @@ public class Movies extends TableImpl<MoviesRecord> {
     /**
      * The column <code>cinema.movies.author</code>.
      */
-    public final TableField<MoviesRecord, String> AUTHOR = createField(DSL.name("author"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MoviesRecord, String> AUTHOR = createField(DSL.name("author"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
      * The column <code>cinema.movies.release_date</code>.

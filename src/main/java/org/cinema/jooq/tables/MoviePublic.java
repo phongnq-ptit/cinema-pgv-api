@@ -14,7 +14,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -75,6 +75,11 @@ public class MoviePublic extends TableImpl<MoviePublicRecord> {
      * The column <code>cinema.movie_public.end_date</code>.
      */
     public final TableField<MoviePublicRecord, LocalDateTime> END_DATE = createField(DSL.name("end_date"), SQLDataType.LOCALDATETIME(0).nullable(false), this, "");
+
+    /**
+     * The column <code>cinema.movie_public.price</code>.
+     */
+    public final TableField<MoviePublicRecord, Integer> PRICE = createField(DSL.name("price"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>cinema.movie_public.total_tickets</code>.
@@ -156,11 +161,11 @@ public class MoviePublic extends TableImpl<MoviePublicRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, byte[], byte[], byte[], LocalDateTime, LocalDateTime, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, byte[], byte[], byte[], LocalDateTime, LocalDateTime, Integer, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }
