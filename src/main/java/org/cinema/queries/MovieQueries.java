@@ -56,8 +56,12 @@ public class MovieQueries {
         .execute();
   }
 
-  public List<MovieDto> findAll() {
-    List<MovieR> movieRs = dsl.selectFrom(MOVIES).orderBy(MOVIES.ID.desc()).fetchInto(MovieR.class);
+  public List<MovieDto> findAll(int active) {
+    List<MovieR> movieRs =
+        dsl.selectFrom(MOVIES)
+            .where(MOVIES.ACTIVE.eq(active))
+            .orderBy(MOVIES.ID.desc())
+            .fetchInto(MovieR.class);
 
     List<MovieDto> movies = new ArrayList<>();
     for (MovieR movieR : movieRs) {
@@ -67,7 +71,6 @@ public class MovieQueries {
       movie.setCategories(this.getCategoriesOfMovie(movie));
       movies.add(movie);
     }
-
     return movies;
   }
 
@@ -107,6 +110,15 @@ public class MovieQueries {
     }
 
     return result;
+  }
+
+  public void changeMovieActive(List<UUID> movieUuids, int active) {
+    for (UUID movieUuid : movieUuids) {
+      dsl.update(MOVIES)
+          .set(MOVIES.ACTIVE, active)
+          .where(MOVIES.UUID.eq(CommonUtils.uuidToBytesArray(movieUuid)))
+          .execute();
+    }
   }
 
   private List<FileDto> getImagesOfMovie(MovieDto movie) {

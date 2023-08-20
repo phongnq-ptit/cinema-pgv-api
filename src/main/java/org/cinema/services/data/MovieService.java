@@ -34,11 +34,11 @@ public class MovieService {
     return Response.noContent().build();
   }
 
-  public Response getListMovies() {
+  public Response getListMovies(int active) {
     return Response.ok()
         .entity(
             new BaseResponse<List<MovieDto>>(
-                200, "lay ra danh sach phim thanh cong", movieQueries.findAll()))
+                200, "lay ra danh sach phim thanh cong", movieQueries.findAll(active)))
         .build();
   }
 
@@ -56,5 +56,11 @@ public class MovieService {
                 "lay ra danh sach phim xuat ban thanh cong",
                 movieQueries.getListMoviePublic(braUuid)))
         .build();
+  }
+
+  public Response changeMovieActive(List<UUID> movieUuids, int active) {
+    movieQueries.changeMovieActive(movieUuids, active);
+
+    return Response.noContent().build();
   }
 }

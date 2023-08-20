@@ -1,6 +1,7 @@
 package org.cinema.controllers;
 
 import jakarta.ws.rs.core.Response;
+import java.util.List;
 import java.util.UUID;
 import org.cinema.models.dto.MovieDto;
 import org.cinema.models.dto.MoviePublicDto;
@@ -23,13 +24,20 @@ public class MovieController {
   }
 
   @GetMapping()
-  public Response getListMovies() {
-    return movieService.getListMovies();
+  public Response getListMovies(@RequestParam(name = "active", defaultValue = "1") int active) {
+    return movieService.getListMovies(active);
   }
 
   @PostMapping()
   public Response create(@RequestBody MovieDto newMovie) {
     return movieService.create(newMovie);
+  }
+
+  @PostMapping("/active")
+  public Response changeMovieActive(
+      @RequestBody List<UUID> movieUuids,
+      @RequestParam(name = "active", required = true) int active) {
+    return movieService.changeMovieActive(movieUuids, active);
   }
 
   @GetMapping("/public")
