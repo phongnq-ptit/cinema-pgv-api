@@ -8,6 +8,8 @@ import org.cinema.models.dto.MoviePublicDto;
 import org.cinema.services.data.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +30,20 @@ public class MovieController {
     return movieService.getListMovies(active);
   }
 
+  @GetMapping("/{movieUuid}")
+  public Response getMovie(@PathVariable("movieUuid") UUID movieUuid) {
+    return movieService.getMovie(movieUuid);
+  }
+
   @PostMapping()
   public Response create(@RequestBody MovieDto newMovie) {
     return movieService.create(newMovie);
+  }
+
+  @PatchMapping("/{movieUuid}")
+  public Response updateMovie(
+      @PathVariable("movieUuid") UUID moveUuid, @RequestBody MovieDto movieUpdate) {
+    return movieService.updateMovie(moveUuid, movieUpdate);
   }
 
   @PostMapping("/active")

@@ -9,6 +9,7 @@ import static org.cinema.jooq.tables.Movies.MOVIES;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -91,6 +92,42 @@ public class MovieQueries {
     return movieDto;
   }
 
+  public void update(UUID movieUuid, MovieDto movieUpdate) {
+    MovieDto movie = this.findByUuid(movieUuid);
+
+    if (Objects.isNull(movie)) return;
+
+    dsl.update(MOVIES)
+        .set(MOVIES.NAME, movieUpdate.getName())
+        .set(MOVIES.AUTHOR, movieUpdate.getAuthor())
+        .set(MOVIES.DURATION, movieUpdate.getDuration())
+        .set(MOVIES.RELEASE_DATE, movieUpdate.getReleaseDate())
+        .set(MOVIES.ACTIVE, movieUpdate.getActive())
+        .where(MOVIES.UUID.eq(CommonUtils.uuidToBytesArray(movie.getUuid())))
+        .execute();
+
+    // update category
+    this.removeCategoriesOfMovie(
+        movie.getCategories().stream().map(item -> item.getUuid()).toList(),
+        movie.getUuid()); // remove old
+    this.insertCategoriesIntoMovie(movie, movieUpdate.getCategories()); // insert new
+
+    // update images
+    if (Objects.nonNull(movieUpdate.getImages())) {
+      this.removeFilesOfMovie(
+          movie.getImages().stream().map(item -> item.getUuid()).toList(),
+          movie.getUuid()); // remove old
+      this.insertFilesIntoMovie(movie, movieUpdate.getImages()); // insert new
+    }
+
+    // update video
+    if (Objects.nonNull(movieUpdate.getMovieFile())) {
+      this.removeFilesOfMovie(
+          Arrays.asList(movie.getMovieFile().getUuid()), movie.getUuid()); // remove old
+      this.insertFilesIntoMovie(movie, Arrays.asList(movieUpdate.getMovieFile())); // insert new
+    }
+  }
+
   public List<MoviePublicDto> getListMoviePublic(UUID branUuid) {
     var query = dsl.selectFrom(MOVIE_PUBLIC).where(MOVIE_PUBLIC.ID.ge((long) 0));
 
@@ -134,6 +171,29 @@ public class MovieQueries {
     List<FileDto> images = new ArrayList<>();
     for (FileR image : _images) images.add(FileDto.toDto(image));
     return images;
+  }
+
+  private void removeFilesOfMovie(List<UUID> fileUuids, UUID movieUuid) {
+    try {
+      dsl.deleteFrom(MOVIE_FILE)
+          .where(MOVIE_FILE.FILE_UUID.in(CommonUtils.listUuidToListBytesArray(fileUuids)))
+          .and(MOVIE_FILE.MOVIE_UUID.eq(CommonUtils.uuidToBytesArray(movieUuid)))
+          .execute();
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+  }
+
+  private void removeCategoriesOfMovie(List<UUID> categoryUuids, UUID movieUuid) {
+    try {
+      dsl.deleteFrom(MOVIE_CATEGORY)
+          .where(
+              MOVIE_CATEGORY.CATEGORY_UUID.in(CommonUtils.listUuidToListBytesArray(categoryUuids)))
+          .and(MOVIE_CATEGORY.MOVIE_UUID.eq(CommonUtils.uuidToBytesArray(movieUuid)))
+          .execute();
+    } catch (Exception e) {
+      System.out.println(e);
+    }
   }
 
   private FileDto getVideoOfMovie(MovieDto movie) {

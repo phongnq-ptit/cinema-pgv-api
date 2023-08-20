@@ -3,6 +3,8 @@ package org.cinema.utils;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.xml.bind.DatatypeConverter;
@@ -37,5 +39,14 @@ public class CommonUtils {
     }
 
     return byteArray;
+  }
+
+  public static List<byte[]> listUuidToListBytesArray(List<UUID> uuids) {
+    List<byte[]> list = new ArrayList<>();
+    for (UUID uuid : uuids) {
+      list.add(uuidToBytesArray(uuid));
+    }
+
+    return list;
   }
 }

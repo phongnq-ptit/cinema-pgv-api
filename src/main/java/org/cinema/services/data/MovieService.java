@@ -2,6 +2,7 @@ package org.cinema.services.data;
 
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.cinema.models.dto.FileDto;
 import org.cinema.models.dto.MovieDto;
@@ -34,11 +35,37 @@ public class MovieService {
     return Response.noContent().build();
   }
 
+  public Response updateMovie(UUID movieUuid, MovieDto movieUpdate) {
+    List<FileDto> imageFiles = null;
+    FileDto movieFile = null;
+    if (Objects.nonNull(movieUpdate.getImages())) {
+      imageFiles = fileQueries.insertMultiFiles(movieUpdate.getImages());
+    }
+    if (Objects.nonNull(movieUpdate.getMovieFile())) {
+      movieFile = fileQueries.insertSingleFile(movieUpdate.getMovieFile());
+    }
+
+    movieUpdate.setImages(imageFiles);
+    movieUpdate.setMovieFile(movieFile);
+
+    movieQueries.update(movieUuid, movieUpdate);
+
+    return Response.noContent().build();
+  }
+
   public Response getListMovies(int active) {
     return Response.ok()
         .entity(
             new BaseResponse<List<MovieDto>>(
                 200, "lay ra danh sach phim thanh cong", movieQueries.findAll(active)))
+        .build();
+  }
+
+  public Response getMovie(UUID uuid) {
+    return Response.ok()
+        .entity(
+            new BaseResponse<MovieDto>(
+                200, "lay ra phim thanh cong", movieQueries.findByUuid(uuid)))
         .build();
   }
 
