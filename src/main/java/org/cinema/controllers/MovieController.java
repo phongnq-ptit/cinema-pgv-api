@@ -26,8 +26,9 @@ public class MovieController {
   }
 
   @GetMapping()
-  public Response getListMovies(@RequestParam(name = "active", defaultValue = "1") int active) {
-    return movieService.getListMovies(active);
+  public Response getListMovies(
+      @RequestParam(defaultValue = "1") int active, @RequestParam(required = false) String name) {
+    return movieService.getListMovies(active, name);
   }
 
   @GetMapping("/{movieUuid}")

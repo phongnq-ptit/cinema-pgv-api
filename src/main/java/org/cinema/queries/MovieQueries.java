@@ -57,12 +57,16 @@ public class MovieQueries {
         .execute();
   }
 
-  public List<MovieDto> findAll(int active) {
-    List<MovieR> movieRs =
-        dsl.selectFrom(MOVIES)
-            .where(MOVIES.ACTIVE.eq(active))
-            .orderBy(MOVIES.ID.desc())
-            .fetchInto(MovieR.class);
+  public List<MovieDto> findAll(int active, String name) {
+    var query = dsl.selectFrom(MOVIES).where(MOVIES.ACTIVE.eq(active));
+
+    // if (Objects.nonNull(name)) {
+    //   System.out.println("1111111");
+    //   System.out.println(name);
+    //   query = query.and(MOVIES.NAME.like(name));
+    // }
+
+    List<MovieR> movieRs = query.orderBy(MOVIES.ID.desc()).fetchInto(MovieR.class);
 
     List<MovieDto> movies = new ArrayList<>();
     for (MovieR movieR : movieRs) {

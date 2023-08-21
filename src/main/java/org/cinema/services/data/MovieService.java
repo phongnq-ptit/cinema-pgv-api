@@ -53,11 +53,11 @@ public class MovieService {
     return Response.noContent().build();
   }
 
-  public Response getListMovies(int active) {
+  public Response getListMovies(int active, String name) {
     return Response.ok()
         .entity(
             new BaseResponse<List<MovieDto>>(
-                200, "lay ra danh sach phim thanh cong", movieQueries.findAll(active)))
+                200, "lay ra danh sach phim thanh cong", movieQueries.findAll(active, name)))
         .build();
   }
 
