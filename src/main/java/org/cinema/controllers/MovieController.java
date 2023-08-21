@@ -63,4 +63,16 @@ public class MovieController {
   public Response addMoviePublic(@RequestBody MoviePublicDto newMoviePublic) {
     return movieService.addMoviePublic(newMoviePublic);
   }
+
+  @PatchMapping("/public/{moviePublicUuid}")
+  public Response updateMoviePublic(
+      @PathVariable("moviePublicUuid") UUID movePublicUuid,
+      @RequestBody MoviePublicDto moviePublicUpdate) {
+    return movieService.updateMoviePublic(movePublicUuid, moviePublicUpdate);
+  }
+
+  @PostMapping("/public/remove")
+  public Response removeMoviePublic(@RequestBody List<UUID> moviePublicUuids) {
+    return movieService.removeMoviePublic(moviePublicUuids);
+  }
 }

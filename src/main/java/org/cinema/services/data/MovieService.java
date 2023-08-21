@@ -53,6 +53,18 @@ public class MovieService {
     return Response.noContent().build();
   }
 
+  public Response updateMoviePublic(UUID moviePublicUuid, MoviePublicDto moviePublicUpdate) {
+    movieQueries.updateMoviePublic(moviePublicUuid, moviePublicUpdate);
+
+    return Response.noContent().build();
+  }
+
+  public Response removeMoviePublic(List<UUID> moviePublicUuids) {
+    movieQueries.removeMoviePublic(moviePublicUuids);
+
+    return Response.noContent().build();
+  }
+
   public Response getListMovies(int active, String name) {
     return Response.ok()
         .entity(

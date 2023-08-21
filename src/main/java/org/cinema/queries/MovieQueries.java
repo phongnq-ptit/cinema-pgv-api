@@ -36,6 +36,25 @@ public class MovieQueries {
     this.userQueries = userQueries;
   }
 
+  public void insert(MovieDto movie) {
+    movie.setUuid(UUID.randomUUID());
+    dsl.insertInto(
+            MOVIES, MOVIES.UUID, MOVIES.NAME, MOVIES.DURATION, MOVIES.AUTHOR, MOVIES.RELEASE_DATE)
+        .values(
+            CommonUtils.uuidToBytesArray(movie.getUuid()),
+            movie.getName(),
+            movie.getDuration(),
+            movie.getAuthor(),
+            movie.getReleaseDate())
+        .execute();
+
+    this.insertCategoriesIntoMovie(movie, movie.getCategories());
+
+    List<FileDto> files = movie.getImages();
+    files.add(movie.getMovieFile());
+    this.insertFilesIntoMovie(movie, files);
+  }
+
   public void insertMoviePublic(MoviePublicDto moviePublicDto) {
     dsl.insertInto(
             MOVIE_PUBLIC,
@@ -132,6 +151,20 @@ public class MovieQueries {
     }
   }
 
+  public void updateMoviePublic(UUID moviePublicUuid, MoviePublicDto moviePublicUpdate) {
+    MoviePublicDto moviePublic = this.findMoviePublicByUuid(moviePublicUuid);
+
+    if (Objects.isNull(moviePublic)) return;
+
+    dsl.update(MOVIE_PUBLIC)
+        .set(MOVIE_PUBLIC.START_DATE, moviePublicUpdate.getStartDate())
+        .set(MOVIE_PUBLIC.END_DATE, moviePublicUpdate.getEndDate())
+        .set(MOVIE_PUBLIC.PRICE, moviePublicUpdate.getPrice())
+        .set(MOVIE_PUBLIC.TOTAL_TICKETS, moviePublicUpdate.getTotalTickets())
+        .where(MOVIE_PUBLIC.UUID.eq(CommonUtils.uuidToBytesArray(moviePublicUuid)))
+        .execute();
+  }
+
   public List<MoviePublicDto> getListMoviePublic(UUID branUuid) {
     var query = dsl.selectFrom(MOVIE_PUBLIC).where(MOVIE_PUBLIC.ID.ge((long) 0));
 
@@ -153,12 +186,36 @@ public class MovieQueries {
     return result;
   }
 
+  public MoviePublicDto findMoviePublicByUuid(UUID moviePublicUuid) {
+    MoviePublicR row =
+        dsl.selectFrom(MOVIE_PUBLIC)
+            .where(MOVIE_PUBLIC.UUID.eq(CommonUtils.uuidToBytesArray(moviePublicUuid)))
+            .fetchOptional()
+            .map(record -> record.into(MoviePublicR.class))
+            .orElse(null);
+
+    MoviePublicDto dto = MoviePublicDto.toDto(row);
+    dto.setBranch(userQueries.findByUuid(row.branchUuid()));
+    dto.setMovie(this.findByUuid(row.movieUuid()));
+    return dto;
+  }
+
   public void changeMovieActive(List<UUID> movieUuids, int active) {
     for (UUID movieUuid : movieUuids) {
       dsl.update(MOVIES)
           .set(MOVIES.ACTIVE, active)
           .where(MOVIES.UUID.eq(CommonUtils.uuidToBytesArray(movieUuid)))
           .execute();
+    }
+  }
+
+  public void removeMoviePublic(List<UUID> moviePublicUuids) {
+    try {
+      dsl.deleteFrom(MOVIE_PUBLIC)
+          .where(MOVIE_PUBLIC.UUID.in(CommonUtils.listUuidToListBytesArray(moviePublicUuids)))
+          .execute();
+    } catch (Exception e) {
+      System.out.println(e);
     }
   }
 
@@ -227,25 +284,6 @@ public class MovieQueries {
     List<CategoryDto> categories = new ArrayList<>();
     for (CategoryR category : _categories) categories.add(CategoryDto.toDto(category));
     return categories;
-  }
-
-  public void insert(MovieDto movie) {
-    movie.setUuid(UUID.randomUUID());
-    dsl.insertInto(
-            MOVIES, MOVIES.UUID, MOVIES.NAME, MOVIES.DURATION, MOVIES.AUTHOR, MOVIES.RELEASE_DATE)
-        .values(
-            CommonUtils.uuidToBytesArray(movie.getUuid()),
-            movie.getName(),
-            movie.getDuration(),
-            movie.getAuthor(),
-            movie.getReleaseDate())
-        .execute();
-
-    this.insertCategoriesIntoMovie(movie, movie.getCategories());
-
-    List<FileDto> files = movie.getImages();
-    files.add(movie.getMovieFile());
-    this.insertFilesIntoMovie(movie, files);
   }
 
   private void insertCategoriesIntoMovie(MovieDto movie, List<CategoryDto> categories) {
