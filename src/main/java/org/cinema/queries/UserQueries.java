@@ -3,9 +3,12 @@ package org.cinema.queries;
 import static org.cinema.jooq.tables.Users.USERS;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import org.cinema.models.dto.UserDto;
+import org.cinema.models.enums.UserRole;
 import org.cinema.models.records.UserRecord.UserR;
 import org.cinema.models.request.RegisterRequest;
 import org.cinema.utils.CommonUtils;
@@ -42,6 +45,18 @@ public class UserQueries {
             .orElse(null);
 
     return UserDto.toDto(row);
+  }
+
+  public List<UserDto> findAllByRole(UserRole role) {
+    List<UserR> users =
+        dsl.select(USERS).from(USERS).where(USERS.ROLE.eq(role.getRole())).fetchInto(UserR.class);
+
+    List<UserDto> _users = new ArrayList<>();
+    for (UserR user : users) {
+      _users.add(UserDto.toDto(user));
+    }
+
+    return _users;
   }
 
   public UserDto findByEmail(String email) {

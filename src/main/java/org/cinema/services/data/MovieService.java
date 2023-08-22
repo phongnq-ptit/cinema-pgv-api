@@ -87,13 +87,23 @@ public class MovieService {
     return Response.noContent().build();
   }
 
-  public Response getListMoviePublic(UUID braUuid) {
+  public Response getListMoviePublic(UUID braUuid, String movieName) {
     return Response.ok()
         .entity(
             new BaseResponse<List<MoviePublicDto>>(
                 200,
                 "lay ra danh sach phim xuat ban thanh cong",
-                movieQueries.getListMoviePublic(braUuid)))
+                movieQueries.getListMoviePublic(braUuid, movieName)))
+        .build();
+  }
+
+  public Response getListMoviePublicForClient() {
+    return Response.ok()
+        .entity(
+            new BaseResponse<List<MovieDto>>(
+                200,
+                "lay ra danh sach phim xuat ban thanh cong",
+                movieQueries.getListMoviePublicForClient()))
         .build();
   }
 

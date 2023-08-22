@@ -6,6 +6,7 @@ import static org.cinema.jooq.tables.MovieCategory.MOVIE_CATEGORY;
 import static org.cinema.jooq.tables.MovieFile.MOVIE_FILE;
 import static org.cinema.jooq.tables.MoviePublic.MOVIE_PUBLIC;
 import static org.cinema.jooq.tables.Movies.MOVIES;
+import static org.cinema.jooq.tables.Users.USERS;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
@@ -23,7 +24,9 @@ import org.cinema.models.records.FileRecord.FileR;
 import org.cinema.models.records.MovieRecord.MoviePublicR;
 import org.cinema.models.records.MovieRecord.MovieR;
 import org.cinema.utils.CommonUtils;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ApplicationScoped
@@ -79,11 +82,9 @@ public class MovieQueries {
   public List<MovieDto> findAll(int active, String name) {
     var query = dsl.selectFrom(MOVIES).where(MOVIES.ACTIVE.eq(active));
 
-    // if (Objects.nonNull(name)) {
-    //   System.out.println("1111111");
-    //   System.out.println(name);
-    //   query = query.and(MOVIES.NAME.like(name));
-    // }
+    if (!name.equalsIgnoreCase("#")) {
+      query = query.and(MOVIES.NAME.like("%" + name + "%"));
+    }
 
     List<MovieR> movieRs = query.orderBy(MOVIES.ID.desc()).fetchInto(MovieR.class);
 
@@ -165,21 +166,58 @@ public class MovieQueries {
         .execute();
   }
 
-  public List<MoviePublicDto> getListMoviePublic(UUID branUuid) {
-    var query = dsl.selectFrom(MOVIE_PUBLIC).where(MOVIE_PUBLIC.ID.ge((long) 0));
+  public List<MoviePublicDto> getListMoviePublic(UUID branUuid, String movieName) {
+    Condition dynamicMovieCondition = DSL.trueCondition();
+    Condition dynamicBranchCondition = DSL.trueCondition();
+
+    if (!movieName.equalsIgnoreCase("#")) {
+      dynamicMovieCondition = dynamicMovieCondition.and(MOVIES.NAME.like("%" + movieName + "%"));
+    }
 
     if (Objects.nonNull(branUuid)) {
-      query = query.and(MOVIE_PUBLIC.BRANCH_UUID.eq(CommonUtils.uuidToBytesArray(branUuid)));
+      dynamicBranchCondition =
+          dynamicBranchCondition.and(
+              MOVIE_PUBLIC.BRANCH_UUID.eq(CommonUtils.uuidToBytesArray(branUuid)));
     }
 
     List<MoviePublicR> _movieRs =
-        query.orderBy(MOVIE_PUBLIC.ID.desc()).fetchInto(MoviePublicR.class);
+        dsl.select(MOVIE_PUBLIC.fields())
+            .from(MOVIE_PUBLIC)
+            .join(MOVIES)
+            .on(MOVIE_PUBLIC.MOVIE_UUID.eq(MOVIES.UUID))
+            .and(dynamicMovieCondition)
+            .join(USERS)
+            .on(MOVIE_PUBLIC.BRANCH_UUID.eq(USERS.UUID))
+            .and(dynamicBranchCondition)
+            .fetch()
+            .into(MoviePublicR.class);
 
     List<MoviePublicDto> result = new ArrayList<>();
     for (MoviePublicR _movieR : _movieRs) {
       MoviePublicDto dto = MoviePublicDto.toDto(_movieR);
       dto.setBranch(userQueries.findByUuid(_movieR.branchUuid()));
       dto.setMovie(this.findByUuid(_movieR.movieUuid()));
+      result.add(dto);
+    }
+
+    return result;
+  }
+
+  public List<MovieDto> getListMoviePublicForClient() {
+    List<MovieR> _movieRs =
+        dsl.selectDistinct(MOVIES.fields())
+            .from(MOVIE_PUBLIC)
+            .join(MOVIES)
+            .on(MOVIE_PUBLIC.MOVIE_UUID.eq(MOVIES.UUID))
+            .fetch()
+            .into(MovieR.class);
+
+    List<MovieDto> result = new ArrayList<>();
+    for (MovieR _movieR : _movieRs) {
+      MovieDto dto = MovieDto.toDto(_movieR);
+      dto.setImages(this.getImagesOfMovie(dto));
+      dto.setMovieFile(this.getVideoOfMovie(dto));
+      dto.setCategories(this.getCategoriesOfMovie(dto));
       result.add(dto);
     }
 

@@ -27,7 +27,7 @@ public class MovieController {
 
   @GetMapping()
   public Response getListMovies(
-      @RequestParam(defaultValue = "1") int active, @RequestParam(required = false) String name) {
+      @RequestParam(defaultValue = "1") int active, @RequestParam(defaultValue = "#") String name) {
     return movieService.getListMovies(active, name);
   }
 
@@ -55,8 +55,15 @@ public class MovieController {
   }
 
   @GetMapping("/public")
-  public Response getListMoviePublic(@RequestParam(required = false) UUID branchUuid) {
-    return movieService.getListMoviePublic(branchUuid);
+  public Response getListMoviePublic(
+      @RequestParam(required = false) UUID branchUuid,
+      @RequestParam(defaultValue = "#") String movieName) {
+    return movieService.getListMoviePublic(branchUuid, movieName);
+  }
+
+  @GetMapping("/public/client")
+  public Response getListMoviePublicForClient() {
+    return movieService.getListMoviePublicForClient();
   }
 
   @PostMapping("/public")
