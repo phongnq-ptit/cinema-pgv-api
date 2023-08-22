@@ -203,12 +203,20 @@ public class MovieQueries {
     return result;
   }
 
-  public List<MovieDto> getListMoviePublicForClient() {
+  public List<MovieDto> getListMoviePublicForClient(
+      String movieName, String branches, String categories) {
+    Condition dynamicCondition = DSL.trueCondition();
+
+    if (!movieName.equalsIgnoreCase("#")) {
+      dynamicCondition = dynamicCondition.and(MOVIES.NAME.like("%" + movieName + "%"));
+    }
+
     List<MovieR> _movieRs =
         dsl.selectDistinct(MOVIES.fields())
             .from(MOVIE_PUBLIC)
             .join(MOVIES)
             .on(MOVIE_PUBLIC.MOVIE_UUID.eq(MOVIES.UUID))
+            .and(dynamicCondition)
             .fetch()
             .into(MovieR.class);
 

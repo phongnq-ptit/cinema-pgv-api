@@ -62,8 +62,11 @@ public class MovieController {
   }
 
   @GetMapping("/public/client")
-  public Response getListMoviePublicForClient() {
-    return movieService.getListMoviePublicForClient();
+  public Response getListMoviePublicForClient(
+      @RequestParam(defaultValue = "#") String movieName,
+      @RequestParam(defaultValue = "#") String branchUuids,
+      @RequestParam(defaultValue = "#") String categoryUuids) {
+    return movieService.getListMoviePublicForClient(movieName, branchUuids, categoryUuids);
   }
 
   @PostMapping("/public")

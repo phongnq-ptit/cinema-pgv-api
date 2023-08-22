@@ -97,13 +97,14 @@ public class MovieService {
         .build();
   }
 
-  public Response getListMoviePublicForClient() {
+  public Response getListMoviePublicForClient(
+      String movieName, String branches, String categories) {
     return Response.ok()
         .entity(
             new BaseResponse<List<MovieDto>>(
                 200,
                 "lay ra danh sach phim xuat ban thanh cong",
-                movieQueries.getListMoviePublicForClient()))
+                movieQueries.getListMoviePublicForClient(movieName, branches, categories)))
         .build();
   }
 
