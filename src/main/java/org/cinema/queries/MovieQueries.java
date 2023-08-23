@@ -9,6 +9,7 @@ import static org.cinema.jooq.tables.Movies.MOVIES;
 import static org.cinema.jooq.tables.Users.USERS;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -194,6 +195,57 @@ public class MovieQueries {
 
     List<MoviePublicDto> result = new ArrayList<>();
     for (MoviePublicR _movieR : _movieRs) {
+      MoviePublicDto dto = MoviePublicDto.toDto(_movieR);
+      dto.setBranch(userQueries.findByUuid(_movieR.branchUuid()));
+      dto.setMovie(this.findByUuid(_movieR.movieUuid()));
+      result.add(dto);
+    }
+
+    return result;
+  }
+
+  public List<MoviePublicDto> getListMoviePublicForPayment(
+      UUID movieUuid, String startDate, UUID branchUuid, UUID moviePublicUuid) {
+    Condition dynamicCondition =
+        DSL.trueCondition().and(MOVIE_PUBLIC.START_DATE.ge(LocalDateTime.now()));
+
+    if (Objects.nonNull(movieUuid)) {
+      dynamicCondition =
+          dynamicCondition.and(MOVIE_PUBLIC.MOVIE_UUID.eq(CommonUtils.uuidToBytesArray(movieUuid)));
+    }
+
+    if (Objects.nonNull(startDate)) {
+      dynamicCondition =
+          dynamicCondition.and(
+              MOVIE_PUBLIC.START_DATE.eq(LocalDateTime.parse(startDate.replace("Z", ""))));
+    }
+
+    if (Objects.nonNull(branchUuid)) {
+      dynamicCondition =
+          dynamicCondition.and(
+              MOVIE_PUBLIC.BRANCH_UUID.eq(CommonUtils.uuidToBytesArray(branchUuid)));
+    }
+
+    if (Objects.nonNull(moviePublicUuid)) {
+      System.out.println(121212);
+      dynamicCondition =
+          dynamicCondition.and(MOVIE_PUBLIC.UUID.eq(CommonUtils.uuidToBytesArray(moviePublicUuid)));
+    }
+
+    List<MoviePublicR> moviePublicRs = new ArrayList<>();
+    try {
+      moviePublicRs =
+          dsl.selectFrom(MOVIE_PUBLIC)
+              .where(dynamicCondition)
+              .orderBy(MOVIE_PUBLIC.START_DATE)
+              .fetch()
+              .into(MoviePublicR.class);
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+
+    List<MoviePublicDto> result = new ArrayList<>();
+    for (MoviePublicR _movieR : moviePublicRs) {
       MoviePublicDto dto = MoviePublicDto.toDto(_movieR);
       dto.setBranch(userQueries.findByUuid(_movieR.branchUuid()));
       dto.setMovie(this.findByUuid(_movieR.movieUuid()));
