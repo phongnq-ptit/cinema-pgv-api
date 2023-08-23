@@ -49,4 +49,21 @@ public class CommonUtils {
 
     return list;
   }
+
+  public static List<UUID> convertStringToListUUID(String uuids) {
+    List<UUID> uuidList = new ArrayList<>();
+    String[] uuidStrings = uuids.split("#");
+
+    for (String uuidStr : uuidStrings) {
+      try {
+        UUID uuid = UUID.fromString(uuidStr.trim());
+        uuidList.add(uuid);
+      } catch (IllegalArgumentException e) {
+        // Handle invalid UUID format
+        System.err.println("Invalid UUID format: " + uuidStr);
+      }
+    }
+
+    return uuidList;
+  }
 }

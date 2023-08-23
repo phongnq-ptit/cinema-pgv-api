@@ -205,18 +205,48 @@ public class MovieQueries {
 
   public List<MovieDto> getListMoviePublicForClient(
       String movieName, String branches, String categories) {
-    Condition dynamicCondition = DSL.trueCondition();
+    Condition dynamicMovieCondition = DSL.trueCondition();
+    Condition dynamicBranchCondition = DSL.trueCondition();
+    Condition dynamicCategoryCondition = DSL.trueCondition();
 
     if (!movieName.equalsIgnoreCase("#")) {
-      dynamicCondition = dynamicCondition.and(MOVIES.NAME.like("%" + movieName + "%"));
+      dynamicMovieCondition = dynamicMovieCondition.and(MOVIES.NAME.like("%" + movieName + "%"));
     }
+
+    if (!branches.equalsIgnoreCase("#")) {
+      List<UUID> branchUuids = CommonUtils.convertStringToListUUID(branches);
+      dynamicBranchCondition =
+          dynamicBranchCondition.and(
+              MOVIE_PUBLIC.BRANCH_UUID.in(CommonUtils.listUuidToListBytesArray(branchUuids)));
+    }
+
+    if (!categories.equalsIgnoreCase("#")) {
+      List<UUID> categoryUuids = CommonUtils.convertStringToListUUID(categories);
+      dynamicCategoryCondition =
+          dynamicCategoryCondition.and(
+              MOVIE_CATEGORY.CATEGORY_UUID.in(CommonUtils.listUuidToListBytesArray(categoryUuids)));
+    }
+
+    /* cai cau nay dang chuan */
+    // List<MovieR> _movieRs =
+    //     dsl.selectDistinct(MOVIES.fields())
+    //         .from(MOVIE_PUBLIC)
+    //         .join(MOVIES)
+    //         .on(MOVIE_PUBLIC.MOVIE_UUID.eq(MOVIES.UUID))
+    //         .and(dynamicMovieCondition)
+    //         .fetch()
+    //         .into(MovieR.class);
 
     List<MovieR> _movieRs =
         dsl.selectDistinct(MOVIES.fields())
             .from(MOVIE_PUBLIC)
             .join(MOVIES)
             .on(MOVIE_PUBLIC.MOVIE_UUID.eq(MOVIES.UUID))
-            .and(dynamicCondition)
+            .and(dynamicMovieCondition)
+            .join(MOVIE_CATEGORY)
+            .on(MOVIE_CATEGORY.MOVIE_UUID.eq(MOVIE_PUBLIC.MOVIE_UUID))
+            .and(dynamicCategoryCondition)
+            .where(dynamicBranchCondition)
             .fetch()
             .into(MovieR.class);
 
