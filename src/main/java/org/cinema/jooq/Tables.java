@@ -12,6 +12,7 @@ import org.cinema.jooq.tables.MovieFile;
 import org.cinema.jooq.tables.MoviePublic;
 import org.cinema.jooq.tables.Movies;
 import org.cinema.jooq.tables.Purchases;
+import org.cinema.jooq.tables.Tickets;
 import org.cinema.jooq.tables.Users;
 
 
@@ -60,6 +61,11 @@ public class Tables {
      * The table <code>cinema.purchases</code>.
      */
     public static final Purchases PURCHASES = Purchases.PURCHASES;
+
+    /**
+     * The table <code>cinema.tickets</code>.
+     */
+    public static final Tickets TICKETS = Tickets.TICKETS;
 
     /**
      * The table <code>cinema.users</code>.

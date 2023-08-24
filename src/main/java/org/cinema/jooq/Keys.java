@@ -12,6 +12,7 @@ import org.cinema.jooq.tables.MovieFile;
 import org.cinema.jooq.tables.MoviePublic;
 import org.cinema.jooq.tables.Movies;
 import org.cinema.jooq.tables.Purchases;
+import org.cinema.jooq.tables.Tickets;
 import org.cinema.jooq.tables.Users;
 import org.cinema.jooq.tables.records.CategoriesRecord;
 import org.cinema.jooq.tables.records.FilesRecord;
@@ -21,6 +22,7 @@ import org.cinema.jooq.tables.records.MovieFileRecord;
 import org.cinema.jooq.tables.records.MoviePublicRecord;
 import org.cinema.jooq.tables.records.MoviesRecord;
 import org.cinema.jooq.tables.records.PurchasesRecord;
+import org.cinema.jooq.tables.records.TicketsRecord;
 import org.cinema.jooq.tables.records.UsersRecord;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -47,5 +49,6 @@ public class Keys {
     public static final UniqueKey<MoviePublicRecord> KEY_MOVIE_PUBLIC_PRIMARY = Internal.createUniqueKey(MoviePublic.MOVIE_PUBLIC, DSL.name("KEY_movie_public_PRIMARY"), new TableField[] { MoviePublic.MOVIE_PUBLIC.ID }, true);
     public static final UniqueKey<MoviesRecord> KEY_MOVIES_PRIMARY = Internal.createUniqueKey(Movies.MOVIES, DSL.name("KEY_movies_PRIMARY"), new TableField[] { Movies.MOVIES.ID }, true);
     public static final UniqueKey<PurchasesRecord> KEY_PURCHASES_PRIMARY = Internal.createUniqueKey(Purchases.PURCHASES, DSL.name("KEY_purchases_PRIMARY"), new TableField[] { Purchases.PURCHASES.ID }, true);
+    public static final UniqueKey<TicketsRecord> KEY_TICKETS_PRIMARY = Internal.createUniqueKey(Tickets.TICKETS, DSL.name("KEY_tickets_PRIMARY"), new TableField[] { Tickets.TICKETS.ID }, true);
     public static final UniqueKey<UsersRecord> KEY_USERS_PRIMARY = Internal.createUniqueKey(Users.USERS, DSL.name("KEY_users_PRIMARY"), new TableField[] { Users.USERS.ID }, true);
 }
