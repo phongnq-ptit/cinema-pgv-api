@@ -14,6 +14,7 @@ import org.cinema.jooq.tables.MovieCategory;
 import org.cinema.jooq.tables.MovieFile;
 import org.cinema.jooq.tables.MoviePublic;
 import org.cinema.jooq.tables.Movies;
+import org.cinema.jooq.tables.Purchases;
 import org.cinema.jooq.tables.Users;
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -69,6 +70,11 @@ public class Cinema extends SchemaImpl {
     public final Movies MOVIES = Movies.MOVIES;
 
     /**
+     * The table <code>cinema.purchases</code>.
+     */
+    public final Purchases PURCHASES = Purchases.PURCHASES;
+
+    /**
      * The table <code>cinema.users</code>.
      */
     public final Users USERS = Users.USERS;
@@ -96,6 +102,7 @@ public class Cinema extends SchemaImpl {
             MovieFile.MOVIE_FILE,
             MoviePublic.MOVIE_PUBLIC,
             Movies.MOVIES,
+            Purchases.PURCHASES,
             Users.USERS
         );
     }

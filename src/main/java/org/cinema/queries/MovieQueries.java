@@ -167,6 +167,22 @@ public class MovieQueries {
         .execute();
   }
 
+  public void updateTotalTicketsOfMoviePublic(UUID moviePublicUuid, int ticket) {
+    MoviePublicDto moviePublic = this.findMoviePublicByUuid(moviePublicUuid);
+
+    if (Objects.isNull(moviePublic)) return;
+
+    if (ticket > moviePublic.getTotalTickets()) {
+      System.out.println("error");
+      return;
+    }
+
+    dsl.update(MOVIE_PUBLIC)
+        .set(MOVIE_PUBLIC.TOTAL_TICKETS, moviePublic.getTotalTickets() - ticket)
+        .where(MOVIE_PUBLIC.UUID.eq(CommonUtils.uuidToBytesArray(moviePublicUuid)))
+        .execute();
+  }
+
   public List<MoviePublicDto> getListMoviePublic(UUID branUuid, String movieName) {
     Condition dynamicMovieCondition = DSL.trueCondition();
     Condition dynamicBranchCondition = DSL.trueCondition();
@@ -227,7 +243,6 @@ public class MovieQueries {
     }
 
     if (Objects.nonNull(moviePublicUuid)) {
-      System.out.println(121212);
       dynamicCondition =
           dynamicCondition.and(MOVIE_PUBLIC.UUID.eq(CommonUtils.uuidToBytesArray(moviePublicUuid)));
     }
