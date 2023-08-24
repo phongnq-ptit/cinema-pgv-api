@@ -14,7 +14,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -80,6 +80,11 @@ public class Purchases extends TableImpl<PurchasesRecord> {
      * The column <code>cinema.purchases.updated_at</code>.
      */
     public final TableField<PurchasesRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>cinema.purchases.downloads</code>.
+     */
+    public final TableField<PurchasesRecord, Integer> DOWNLOADS = createField(DSL.name("downloads"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Purchases(Name alias, Table<PurchasesRecord> aliased) {
         this(alias, aliased, null);
@@ -156,11 +161,11 @@ public class Purchases extends TableImpl<PurchasesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, byte[], byte[], byte[], Integer, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, byte[], byte[], byte[], Integer, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

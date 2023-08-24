@@ -14,6 +14,7 @@ public class PurchaseDto {
   private UserDto user;
   private MoviePublicDto moviePublic;
   private int quantityOfTickets;
+  private int downloads;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
@@ -25,6 +26,7 @@ public class PurchaseDto {
     return PurchaseDto.builder()
         .uuid(purchaseR.uuid())
         .quantityOfTickets(purchaseR.quantityOfTickets())
+        .downloads(purchaseR.downloads())
         .createdAt(purchaseR.createdAt())
         .updatedAt(purchaseR.updatedAt())
         .build();

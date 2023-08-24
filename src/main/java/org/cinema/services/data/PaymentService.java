@@ -55,4 +55,9 @@ public class PaymentService {
                 purchaseQueries.findAllByUserUuid(userUuid)))
         .build();
   }
+
+  public Response updateDownload(UUID uuid) {
+    purchaseQueries.updatePurchaseDownloads(uuid);
+    return Response.noContent().build();
+  }
 }

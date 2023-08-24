@@ -5,6 +5,7 @@ import static org.cinema.jooq.tables.Purchases.PURCHASES;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.cinema.models.dto.PurchaseDto;
 import org.cinema.models.records.PurchaseRecord.PurchaseR;
@@ -66,11 +67,13 @@ public class PurchaseQueries {
               PURCHASES.UUID,
               PURCHASES.USER_UUID,
               PURCHASES.MOVIE_PUBLIC_UUID,
-              PURCHASES.QUANTITY_OF_TICKETS)
+              PURCHASES.QUANTITY_OF_TICKETS,
+              PURCHASES.DOWNLOADS)
           .values(
               CommonUtils.uuidToBytesArray(dto.getUuid()),
               CommonUtils.uuidToBytesArray(dto.getUser().getUuid()),
               CommonUtils.uuidToBytesArray(dto.getMoviePublic().getUuid()),
+              dto.getQuantityOfTickets(),
               dto.getQuantityOfTickets())
           .execute();
 
@@ -80,5 +83,16 @@ public class PurchaseQueries {
     } catch (Exception e) {
       System.out.println(e);
     }
+  }
+
+  public void updatePurchaseDownloads(UUID uuid) {
+    PurchaseDto purchase = this.findByUuid(uuid);
+
+    if (Objects.isNull(purchase)) return;
+
+    dsl.update(PURCHASES)
+        .set(PURCHASES.DOWNLOADS, purchase.getDownloads() - 1)
+        .where(PURCHASES.UUID.eq(CommonUtils.uuidToBytesArray(purchase.getUuid())))
+        .execute();
   }
 }

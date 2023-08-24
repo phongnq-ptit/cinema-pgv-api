@@ -11,5 +11,6 @@ public class PurchaseRecord {
       UUID moviePublicUuid,
       int quantityOfTickets,
       LocalDateTime createdAt,
-      LocalDateTime updatedAt) {}
+      LocalDateTime updatedAt,
+      int downloads) {}
 }

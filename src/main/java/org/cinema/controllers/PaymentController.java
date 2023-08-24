@@ -7,6 +7,7 @@ import org.cinema.models.dto.PurchaseDto;
 import org.cinema.services.data.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,5 +46,10 @@ public class PaymentController {
   @PostMapping()
   public Response createPurchase(@RequestBody PurchaseDto purchaseDto) {
     return paymentService.createPurchase(purchaseDto);
+  }
+
+  @PatchMapping("/downloads/{purchaseUuid}")
+  public Response updatePurchaseDownload(@PathVariable("purchaseUuid") UUID purchaseUuid) {
+    return paymentService.updateDownload(purchaseUuid);
   }
 }
