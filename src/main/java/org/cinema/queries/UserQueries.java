@@ -71,6 +71,9 @@ public class UserQueries {
   }
 
   public boolean insert(RegisterRequest newUser) {
+    if (Objects.isNull(newUser.getUuid())) {
+      newUser.setUuid(UUID.randomUUID());
+    }
     int result =
         dsl.insertInto(
                 USERS,
@@ -79,7 +82,6 @@ public class UserQueries {
                 USERS.PASSWORD,
                 USERS.ADDRESS,
                 USERS.USER_NAME,
-                USERS.CINEMA_ID,
                 USERS.ROLE,
                 USERS.ACTIVE)
             .values(
@@ -88,7 +90,6 @@ public class UserQueries {
                 CommonUtils.hashPassword(newUser.getPassword()),
                 newUser.getAddress(),
                 newUser.getUserName(),
-                CommonUtils.uuidToBytesArray(newUser.getCinemaId()),
                 newUser.getRole().getRole(),
                 newUser.getActive())
             .execute();

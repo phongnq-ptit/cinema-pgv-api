@@ -1,10 +1,15 @@
 package org.cinema.controllers;
 
 import jakarta.ws.rs.core.Response;
+import java.util.UUID;
 import org.cinema.models.enums.UserRole;
+import org.cinema.models.request.RegisterRequest;
 import org.cinema.services.data.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,5 +26,15 @@ public class UserController {
   @GetMapping()
   public Response getUserByRole(@RequestParam(defaultValue = "CLIENT") UserRole role) {
     return userService.getUsersByRole(role);
+  }
+
+  @GetMapping("/{userUuid}")
+  public Response getUser(@PathVariable("userUuid") UUID uuid) {
+    return userService.getUsersByUuid(uuid);
+  }
+
+  @PostMapping()
+  public Response createUser(@RequestBody RegisterRequest newUser) {
+    return userService.createUser(newUser);
   }
 }
