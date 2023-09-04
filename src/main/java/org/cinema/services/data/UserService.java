@@ -19,11 +19,11 @@ public class UserService {
     this.userQueries = userQueries;
   }
 
-  public Response getUsersByRole(UserRole role) {
+  public Response getUsersByRole(UserRole role, String search) {
     return Response.ok()
         .entity(
             new BaseResponse<List<UserDto>>(
-                200, "lay ra danh sach user thanh cong", userQueries.findAllByRole(role)))
+                200, "lay ra danh sach user thanh cong", userQueries.findAllByRole(role, search)))
         .build();
   }
 

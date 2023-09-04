@@ -26,8 +26,10 @@ public class UserController {
   }
 
   @GetMapping()
-  public Response getUserByRole(@RequestParam(defaultValue = "CLIENT") UserRole role) {
-    return userService.getUsersByRole(role);
+  public Response getUserByRole(
+      @RequestParam(defaultValue = "CLIENT") UserRole role,
+      @RequestParam(defaultValue = "#") String search) {
+    return userService.getUsersByRole(role, search);
   }
 
   @GetMapping("/{userUuid}")

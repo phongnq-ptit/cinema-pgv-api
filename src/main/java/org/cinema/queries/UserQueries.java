@@ -47,9 +47,13 @@ public class UserQueries {
     return UserDto.toDto(row);
   }
 
-  public List<UserDto> findAllByRole(UserRole role) {
+  public List<UserDto> findAllByRole(UserRole role, String search) {
     List<UserR> users =
-        dsl.select(USERS).from(USERS).where(USERS.ROLE.eq(role.getRole())).fetchInto(UserR.class);
+        dsl.select(USERS)
+            .from(USERS)
+            .where(USERS.ROLE.eq(role.getRole()))
+            .and(USERS.USER_NAME.like(search.equals("#") ? "%" : "%" + search + "%"))
+            .fetchInto(UserR.class);
 
     List<UserDto> _users = new ArrayList<>();
     for (UserR user : users) {
