@@ -39,4 +39,10 @@ public class UserService {
     userQueries.insert(user);
     return Response.noContent().build();
   }
+
+  public Response updateUser(UUID userUuid, UserDto userUpdate) {
+    userQueries.update(userUuid, userUpdate);
+
+    return Response.noContent().build();
+  }
 }
